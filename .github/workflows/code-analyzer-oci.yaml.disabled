@@ -1,0 +1,46 @@
+name: Build and Publish DevOps Analyzer Image
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: Build Docker image
+      run: |
+        docker build -t devops-analyzer:latest .
+
+    - name: Tag image for Docker Hub
+      run: |
+        docker tag devops-analyzer:latest ${{ secrets.DOCKERHUB_USERNAME }}/devops-analyzer:latest
+
+    - name: Push image to Docker Hub
+      run: |
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/devops-analyzer:latest
+
+    - name: Save image as tarball
+      run: |
+        docker save devops-analyzer:latest -o devops-analyzer.tar
+
+    - name: Upload image as GitHub artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: devops-analyzer-image
+        path: devops-analyzer.tar

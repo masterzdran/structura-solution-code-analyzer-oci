@@ -1,0 +1,29 @@
+{
+  "name": "DevOps Analyzer Dev Environment",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": "."
+  },
+  "workspaceFolder": "/home/devuser/workspace",
+  "remoteUser": "devuser",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "extensions": [
+          "ms-vscode.vscode-typescript-next",
+          "ms-python.python",
+          "ms-dotnettools.csharp",
+          "dbaeumer.vscode-eslint",
+          "Github.copilot",
+          "GitHub.copilot-chat"
+        ]
+      }
+    }
+  },
+  "mounts": [
+    "source=${localWorkspaceFolder},target=/home/devuser/workspace,type=bind,consistency=cached",
+    "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+  ],
+  "postCreateCommand": "echo '✅ Dev container ready for testing.'"
+}

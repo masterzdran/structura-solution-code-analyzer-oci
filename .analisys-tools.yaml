@@ -1,0 +1,15 @@
+SEMGRP: yes
+TRIVY: yes
+SONAR: yes
+SNYK: yes
+GITLEAKS: yes
+CODEQL: yes
+DEPENDENCY_CHECK: yes
+ESLINT: yes
+PYLINT: yes
+BANDIT: yes
+JEST: yes
+PYTEST: yes
+DOTNET_FORMAT: yes
+DOTNET_TEST: yes
+CLOC: yes

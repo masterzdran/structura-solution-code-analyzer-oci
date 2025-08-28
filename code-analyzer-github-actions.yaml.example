@@ -1,0 +1,37 @@
+name: DevOps Analysis
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  analysis:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Run full analysis in container
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      run: |
+        mkdir -p reports
+        docker run --rm \
+          -v ${{ github.workspace }}:/workspace \
+          -e SNYK_TOKEN \
+          -e SONAR_TOKEN \
+          -e SONAR_PROJECT_KEY \
+          -e SONAR_HOST_URL \
+          yourdockerhubuser/devops-analyzer:latest \
+          analyze.sh
+
+    - name: Upload Reports
+      uses: actions/upload-artifact@v3
+      with:
+        name: analysis-reports
+        path: reports/
