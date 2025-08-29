@@ -4,7 +4,7 @@
     "dockerfile": "Dockerfile",
     "context": "."
   },
-  "workspaceFolder": "/home/devuser/workspace",
+  "workspaceFolder": "/workspace",
   "remoteUser": "devuser",
   "customizations": {
     "vscode": {
