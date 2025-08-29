@@ -8,10 +8,12 @@ LABEL description="Secure DevOps analysis container"
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PATH="$PATH:/root/.dotnet/tools"
 
+USER root
+
 # Create users early
 RUN useradd -m devuser && useradd -m analyzer
-
-USER root
+# Set working directory
+WORKDIR /workspace
 
 # Install curl first, then Docker Buildx
 RUN apt-get update && apt-get install -y --no-install-recommends apt-utils curl ca-certificates \
@@ -74,6 +76,7 @@ RUN wget -q https://github.com/jeremylong/DependencyCheck/releases/download/v12.
 # Add devuser to docker group and set permissions
 RUN groupadd -f docker \
     && usermod -aG docker devuser \
+    && usermod -aG docker analyzer \
     && [ ! -e /var/run/docker.sock ] || chown root:docker /var/run/docker.sock \
     && [ ! -e /var/run/docker.sock ] || chmod 660 /var/run/docker.sock
 
@@ -91,4 +94,8 @@ RUN chmod +x /usr/local/bin/analyze.sh
 # Install semgrep via pip (safer than curl | bash)
 RUN pip install --no-cache-dir semgrep
 
-USER devuser
+# Drop back to non-root user
+RUN mkdir -p /workspace/reports && chown -R analyzer:analyzer /workspace
+
+USER analyzer
+WORKDIR /workspace

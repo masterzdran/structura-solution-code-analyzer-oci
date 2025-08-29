@@ -1,7 +1,6 @@
 #!/bin/bash
 set -euo pipefail
 
-mkdir -p /workspace/reports
 
 # Load feature toggles
 declare -A TOOLS
